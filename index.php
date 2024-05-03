@@ -10,7 +10,6 @@ require_once 'core/controller.php';
 require_once 'core/model.php';
 require_once 'core/routes.php';
 
-
 //ini_set("log_errors", 0);
 //error_reporting(E_ERROR | E_PARSE);
 //unlink("error_log");
@@ -18,7 +17,6 @@ ini_set('display_errors', '1');
 
 
 new messenger;
-
 
 $requested_uri = $_SERVER['REQUEST_URI'];
 
