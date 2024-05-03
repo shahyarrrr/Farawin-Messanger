@@ -8,6 +8,8 @@ require_once 'core/config.php';
 require_once 'core/messenger.php';
 require_once 'core/controller.php';
 require_once 'core/model.php';
+require_once 'core/routes.php';
+
 
 //ini_set("log_errors", 0);
 //error_reporting(E_ERROR | E_PARSE);
@@ -17,7 +19,6 @@ ini_set('display_errors', '1');
 
 new messenger;
 
-require_once 'routes.php';
 
 $requested_uri = $_SERVER['REQUEST_URI'];
 
