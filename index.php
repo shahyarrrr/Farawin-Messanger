@@ -18,10 +18,3 @@ ini_set('display_errors', '1');
 
 new messenger;
 
-$requested_uri = $_SERVER['REQUEST_URI'];
-
-if (isset($routes[$requested_uri])) {
-    require_once $routes[$requested_uri];
-} else {
-    echo "404 not found";
-}
