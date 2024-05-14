@@ -1,53 +1,29 @@
-<html>
-    <head>
-        <style>
-            form{
-            margin: auto;
-            width: fit-content;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            }
-        </style>
-    </head>
-    <form action="" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <label for="conf-password">Confirm Password:</label>
-        <input type="password" id="conf-password" name="conf-password" required><br>
-        <input type="submit" value="Register">    
-    </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <form action="register/insert_data" method="POST">
+            <h2>Register</h2>
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-group">
+                <label for="password">re-enter Password:</label>
+                <input type="password" id="conf-password" name="conf-password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
 </html>
-
-<?php
-
-$registered = true;
-$errors = array();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['conf-password'];
-    if ($password == $confirm_password) {
-        $password = hash('sha256', $password);
-    } else {
-        $errors[] = 'password does not match with re-enter password field';
-    }
-    if (count($errors) > 0) {
-        $registered = false;
-        foreach ($errors as $error) {
-            echo $error;
-        }
-    }
-}
-
-
-
-?>

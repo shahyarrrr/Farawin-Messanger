@@ -1,4 +1,4 @@
-<?php
+`<?php
 require_once "public-function.php";
 
 class Model
@@ -36,6 +36,31 @@ class Model
         $decryption_iv = '1234567891011121';
 
         return openssl_decrypt($data, $ciphering, $decryption_key, $options, $decryption_iv);
+    }
+    public static function doSelect($sql, $values = array(), $fetch = '', $fetchStyle = PDO::FETCH_ASSOC)
+    {
+        $stmt = self::$conn->prepare($sql);
+        foreach ($values as $key => $value) {
+            $stmt->bindValue($key + 1, $value);
+        }
+        $stmt->execute();
+        if ($fetch == '') {
+            $result = $stmt->fetchAll($fetchStyle);
+        } else {
+            $result = $stmt->fetch($fetchStyle);
+        }
+
+        return $result;
+    }
+
+    public static function doQuery($sql, $values = array())
+    {
+        $stmt = self::$conn->prepare($sql);
+
+        foreach ($values as $key => $value) {
+            $stmt->bindValue($key + 1, $value);
+        }
+        $stmt->execute();
     }
 
     use publicTrait;
