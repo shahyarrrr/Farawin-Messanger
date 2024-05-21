@@ -21,12 +21,7 @@ class Login extends Controller
     function check_data() 
     {
         $login = $this->model->check_data($_POST);
-        if ($login) {
-            Model::session_set('username', $_POST['username']);
-        } else {
-            header("Location:" . URL . "/login");
-        }
+        echo $login;
     }
 }
-
 ?>

@@ -19,12 +19,7 @@ class register extends  Controller
     }
     function insert_data()
     {
-        $check = $this->model->insert_data($_POST);
-        if ($check) {
-            Model::session_set('username', $_POST['username']);
-            $this->view('register/welcome');
-        } else {
-            $this->view('register/index');
-        }
+        $register = $this->model->insert_data($_POST);
+        echo $register;
     }
 }
