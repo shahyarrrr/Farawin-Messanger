@@ -11,8 +11,8 @@
         <form id="register-form">
             <h2>Register</h2>
             <div class="input-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username">
+                <label for="username">Phone number:</label>
+                <input type="text" id="phone" name="username">
             </div>
             <div class="input-group">
                 <label for="password">Password:</label>
@@ -26,12 +26,13 @@
             <br>
             <span id="showError"></span>
         </form>
+        <a href="<?= URL; ?>login">Login</a>
     </div>
 <script src="public/js/jquery-3.4.1.min.js"></script>
 <script>
     $("#register-form").submit(function(e) {
         e.preventDefault();
-        var username = $("#username").val();
+        var phone = $("#phone").val();
         var password = $("#password").val();
         var confpassword = $("#confpassword").val();
 
@@ -39,7 +40,7 @@
             type:"POST",
             url:"<?= URL; ?>register/insert_data",
             data:{
-                username:username,
+                phone:phone,
                 password:password,
                 confpassword:confpassword
             },
@@ -47,6 +48,7 @@
                 response = JSON.parse(response);
                 if (response.status == true) {
                     $("#showError").text(response.message);
+                    window.location = "<?= URL; ?>login";
                 } else {
                     $("#showError").text(response.message);
                 }
