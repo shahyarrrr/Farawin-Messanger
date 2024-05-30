@@ -35,7 +35,7 @@
                         response = JSON.parse(response)
                         if (response.status == true) {
                             $("#showError").text(response.message);
-                            window.location = "<?= URL; ?>"
+                            window.location = "<?= URL; ?>";
                         } else {
                             $("#showError").text(response.message);
                         }

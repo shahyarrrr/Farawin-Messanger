@@ -13,7 +13,7 @@ class addcontact extends Controller {
     }
 
     function add() {
-        $this_username = Model::session_get("username");
+        $this_username = Model::session_get("id");
         $response = $this->model->addcontact($this_username, $_POST);
         echo $response;
     }

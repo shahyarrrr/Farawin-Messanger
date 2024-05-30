@@ -34,8 +34,9 @@
                         response = JSON.parse(response);
                         if (response.status == true) {
                             $("#showError").text(response.message);
+                        } else {
+                            $("#showError").text(response.message);
                         }
-                        
                     },
                     error: function() {
                         alert("alert!");

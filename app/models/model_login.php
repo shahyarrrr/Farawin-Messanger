@@ -24,7 +24,7 @@ class model_login extends Model
             );
             return json_encode($response);
         } else {
-            $sql = "SELECT password FROM users WHERE username=?";
+            $sql = "SELECT * FROM users WHERE username=?";
             $parms = array($phone);
             $result = $this->doSelect($sql, $parms);
             if (count($result) > 0) {
@@ -33,6 +33,7 @@ class model_login extends Model
                             'status'=> true,
                             'message'=> 'succesfully logined'
                         );
+                        Model::session_set('id', $result[0]['id']);
                         Model::session_set('username', $_POST['phone']);
                         return json_encode($response);
                     } else {

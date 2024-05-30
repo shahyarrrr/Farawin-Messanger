@@ -9,6 +9,7 @@ class Index extends Controller
         $this->checkLogin = Model::session_get("username");
         if ($this->checkLogin == false) {
             header("Location:" . URL . "login");
+        }
     }
 
     function index()
