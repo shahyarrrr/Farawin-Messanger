@@ -21,4 +21,19 @@ class Index extends Controller
         $this->view('index/index');
     }
 
+    function addcontact() {
+        $result = $this->model->addcontact($_POST);
+        echo $result;
+    }
+
+    function getcontact() {
+        $result = $this->model->getcontact();
+        echo $result;
+    }
+
+    function editcontact() {
+        $result = $this->model->editcontact($_POST);
+        echo $result;
+    }
+
 }

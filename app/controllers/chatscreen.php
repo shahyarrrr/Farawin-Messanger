@@ -1,9 +1,7 @@
 <?php
 
-class Login extends Controller
-{
+class Chatscreen extends Controller {
     public $checkLogin = '';
-
     function __construct()
     {
         parent::__construct();
@@ -15,13 +13,6 @@ class Login extends Controller
 
     function index()
     {
-        $this->view('login/index');
-    }
-
-    function check_data() 
-    {
-        $login = $this->model->check_data($_POST);
-        echo $login;
+        $this->view('chatscreen/index');
     }
 }
-?>
