@@ -8,7 +8,7 @@
 <title>chat</title>
 </head>
 <body>
-    <main class="">            
+    <main class="main">            
         
         <div class="contact-list-container">
             <div class="contact-list-header">
@@ -21,6 +21,26 @@
             <div class="contact-list" id="contactList">
                 
             </div>
+        </div>
+        <div class="chat-container" id="chatContainer">
+            <div class="navbar">
+                <button class="contact-add" onclick="refreshChat()">
+                    <img src="public/images/refresh_icon.png" alt="" class="refresh-img">
+                </button>
+                <p class="chat-name" id="chatName"></p>
+                <img src="" alt="" class="chat-profile" id="profile">
+            </div>
+            <div class="chat-list" id="chatList">
+
+            </div>
+            <form action="#" onsubmit="sendMessage(event)">
+                <div class="chat-input">
+                    <button class="chat-send" type="submit">
+                        <img src="public/images/send.png" alt="" class="send-image">
+                    </button>
+                    <input type="text" class="chat-input-field" id="chatInput">
+                </div>
+            </form>
         </div>
 
 
@@ -64,7 +84,7 @@
     <script>
             window.onload = refreshContactList();
             var myData = null;
-           var modal = document.getElementById("myModal");
+            var modal = document.getElementById("myModal");
            
             function openModal() {
                 modal.style.display = "flex";
@@ -175,6 +195,30 @@
 
             const contactBoxTag = document.createElement('div');
             contactBoxTag.classList.add('contact-box');
+            contactBoxTag.addEventListener('click', ()=>{
+                localStorage.setItem('contact_id', id)
+                localStorage.setItem('srcprof', src)
+                $('.contact-box').removeClass('active')
+                contactBoxTag.classList.add('active')
+                $.ajax({
+                    type: "GET",
+                    url: "<?= URL; ?>index/chatContainer",
+                    data: {
+                        contact_id : localStorage.getItem('contact_id')                    },
+                    success: function(response) {
+                        response = JSON.parse(response)
+                        if (response.status == true) {
+                            $("#chatName").text(response.name)
+                            $("#profile").attr("src", localStorage.getItem('srcprof'))
+                            refreshChat()
+                        }
+                    },
+                    error: function(response) {
+                        alert('alert')
+                    }
+                })
+                $('#chatContainer').css('opacity', '1')
+            })
 
             const imageTag = document.createElement('img')
             imageTag.src = src;
@@ -223,6 +267,88 @@
             )
         })
         }
+
+        // send message
+
+        function sendMessage(event) {
+            var inputValue = $('#chatInput').val()
+            $('#chatInput').val('')
+            var contact_id = localStorage.getItem('contact_id')
+            $.ajax({
+                type: "POST",
+                url: "<?= URL; ?>index/sendMessage",
+                data :{
+                    message : inputValue,
+                    contact_id :contact_id,
+                },
+                success : function(response) {
+                    response = JSON.parse(response)
+                    if (response.status == true) {
+                        console.log(response);
+                        refreshChat()
+                    }
+                    
+                }
+            })
+        }
+
+        function refreshChat() {
+            $.ajax({
+                type: "GET",
+                url: "<?= URL; ?>index/refreshChat",
+                data: {
+                    recv_id : localStorage.getItem("contact_id"),
+                },
+                success: function(response) {
+                    response = JSON.parse(response)
+                    if (response.status == true) {
+                        wrapchatList(response.messages)
+                    }
+                }
+            })
+        }
+
+        function appendMessage(content, sender) {
+            // Create a new div element for the message
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+
+            // Set the class based on the sender
+            if (sender === true) {
+                messageDiv.classList.add('sent');
+            } else {
+                messageDiv.classList.add('received');
+            }
+
+            // Create a paragraph element to hold the message content
+            const messageContent = document.createElement('p');
+            messageContent.innerText = content;
+
+            // Append the paragraph to the message div
+            messageDiv.appendChild(messageContent);
+
+            // Get the chat list container
+            const chatList = document.querySelector('.chat-list');
+
+            // Append the message div to the chat list
+            chatList.appendChild(messageDiv);
+
+            // Scroll to the bottom of the chat list
+            chatList.scrollTop = chatList.scrollHeight;
+        }
+
+        function wrapchatList(list) {
+            $("#chatList div").remove()
+            list.map((item, index)=> {
+            // console.log(list[index])
+            // console.log(appendMessage(item.text, item.boolean));
+            // document.querySelector('#chatList').appendChild(
+                appendMessage(item.text, item.boolean)
+            // )
+            // console.log(item.text);
+        })
+        }
+
     </script>
 </body>
 </html>

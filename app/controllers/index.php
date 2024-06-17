@@ -36,4 +36,18 @@ class Index extends Controller
         echo $result;
     }
 
+    function chatContainer() {
+        $result = $this->model->chatContainer($_GET);
+        echo $result;
+    }
+
+    function sendMessage() {
+        $result = $this->model->sendMessage($_POST);
+        echo $result;
+    }
+
+    function refreshChat() {
+        $result = $this->model->refreshChat($_GET);
+        echo $result;
+    }
 }
