@@ -190,7 +190,7 @@ class model_index extends Model
     }
 
     function editMessage($post) {
-        $new = $this->encrypt($post['new_message'], 1383);
+        $new = $this->encrypt($post['new_message'] . (' (edited)'), 1383);
         $old = $this->encrypt($post['old_message'], 1383);
         $date = $post['date'];
         $id = $post['contact_id'];
