@@ -24,7 +24,7 @@
         </div>
         <div class="chat-container" id="chatContainer">
             <div class="navbar">
-                <button class="contact-add" onclick="refreshChat()">
+                <button class="contact-add" id='refreshChat' onclick="refreshChat()">
                     <img src="public/images/refresh_icon.png" alt="" class="refresh-img">
                 </button>
                 <p class="chat-name" id="chatName"></p>
@@ -33,7 +33,7 @@
             <div class="chat-list" id="chatList">
 
             </div>
-            <form action="#" onsubmit="sendMessage(event)">
+            <form onsubmit="sendMessage(event); return false">
                 <div class="chat-input">
                     <button class="chat-send" type="submit">
                         <img src="public/images/send.png" alt="" class="send-image">
@@ -308,7 +308,7 @@
             })
         }
 
-        function appendMessage(content, sender) {
+        function appendMessage(content, sender, date) {
             // Create a new div element for the message
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
@@ -316,16 +316,36 @@
             // Set the class based on the sender
             if (sender === true) {
                 messageDiv.classList.add('sent');
+                const editButton = document.createElement('button');
+                editButton.innerText = 'Edit';
+                editButton.classList.add('edit-button');
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.classList.add('delete-button');
+
+                editButton.addEventListener('click', () => editMessage(messageDiv, messageContent, dateSpan));
+                deleteButton.addEventListener('click', () => deleteMessage(messageContent, dateSpan));
+
+                messageDiv.appendChild(editButton);
+                messageDiv.appendChild(deleteButton);
             } else {
                 messageDiv.classList.add('received');
             }
+
+            // Create a span element to hold the date
+            const dateSpan = document.createElement('span');
+            dateSpan.classList.add('date');
+            dateSpan.innerText = date;
 
             // Create a paragraph element to hold the message content
             const messageContent = document.createElement('p');
             messageContent.innerText = content;
 
-            // Append the paragraph to the message div
+            // Append the date span, message content, and buttons to the message div
+            messageDiv.appendChild(dateSpan);
             messageDiv.appendChild(messageContent);
+
 
             // Get the chat list container
             const chatList = document.querySelector('.chat-list');
@@ -337,17 +357,72 @@
             chatList.scrollTop = chatList.scrollHeight;
         }
 
+        function editMessage(messageDiv, messageContent, dateSpan) {
+            const newContent = prompt('Edit your message:', messageContent.innerText);
+            if (newContent !== null) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?= URL; ?>index/editMessage",
+                    data: {
+                        new_message : newContent,
+                        old_message : messageContent.innerText,
+                        date:dateSpan.innerText,
+                        contact_id : localStorage.getItem('contact_id')
+                    },
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        if (response.status == true) {
+                            refreshChat();
+                        } else {
+                            alert('alert');
+                        }
+                    },
+                    error: function(response) {
+                        alert('alert');
+                    }
+                })
+            }
+        }
+
+        function deleteMessage(messageContent, dateSpan) {
+            const isConfirmed = confirm("Are you sure you want to delete this message?");
+            if (isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?= URL; ?>index/deleteMessage",
+                    data: {
+                        msg: messageContent.innerText,
+                        date: dateSpan.innerText,
+                        contact_id: localStorage.getItem('contact_id')
+                    },
+                    success: function(response) {
+                        response = JSON.parse(response)
+                        if (response.status == true) {
+                            refreshChat();
+                        }
+                    },
+                    error: function(response) {
+                        alert('alert')
+                    }
+                })
+            }
+        }
+
         function wrapchatList(list) {
             $("#chatList div").remove()
             list.map((item, index)=> {
-            // console.log(list[index])
-            // console.log(appendMessage(item.text, item.boolean));
-            // document.querySelector('#chatList').appendChild(
-                appendMessage(item.text, item.boolean)
-            // )
-            // console.log(item.text);
+                appendMessage(item.text, item.boolean, item.send_date)
         })
         }
+
+        function clickButton() {
+            const button = document.getElementById('refreshChat');
+            if (button) {
+                button.click()
+            }
+        }
+
+        // setInterval(clickButton, 10000);
 
     </script>
 </body>

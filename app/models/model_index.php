@@ -86,10 +86,18 @@ class model_index extends Model
             $this_contact = $result[$i];
             $contact_id = $this_contact['contact_id'];
             $contact_name = $this_contact['contact_name'];
+            $textSql = "SELECT id,text FROM messages WHERE (sender_id=? AND reciver_id=?) OR (sender_id=? AND reciver_id=?)";
+            $textParams = array($id, $contact_id, $contact_id, $id);
+            $textResult = $this->doSelect($textSql, $textParams);
+            if ($textResult) {
+                $lastText = $this->decrypt(end($textResult)['text'], 1383);  
+            } else {
+                $lastText = '-';
+            }          
             $contactsData[] = array(
                 "name"=> $contact_name,
                 "src"=> 'public/images/user-default-image.jpg',
-                "text"=> '-',
+                "text"=> $lastText,
                 "id"=> $contact_id
             );
         }
@@ -152,23 +160,21 @@ class model_index extends Model
         $reciver_id = $post['recv_id'];
         $sender_id = $_SESSION['id'];
 
-        $sql = "SELECT id,text FROM messages WHERE sender_id=? AND reciver_id=?";
+        $sql = "SELECT id,text,send_date FROM messages WHERE sender_id=? AND reciver_id=?";
         $params = array($sender_id, $reciver_id);
         $sent_result = $this->doSelect($sql, $params);
         addBooleanValue($sent_result, true);
 
-        $second_sql = "SELECT id,text FROM messages WHERE sender_id=? AND reciver_id=?";
+        $second_sql = "SELECT id,text,send_date FROM messages WHERE sender_id=? AND reciver_id=?";
         $second_params = array($reciver_id, $sender_id);
         $recived_result = $this->doSelect($second_sql, $second_params);
         addBooleanValue($recived_result, false);
 
         $result = array_merge($sent_result, $recived_result);
 
-        for ($i = 0; $i < count($result); $i ++) {
-            
+        for ($i = 0; $i < count($result); $i ++) {  
             $decrypted_message = $this->decrypt($result[$i]['text'], 1383);
             $result[$i]['text'] = $decrypted_message;
-
         }
 
         function comparebyId($a, $b) {
@@ -183,7 +189,43 @@ class model_index extends Model
         return json_encode($response);
     }
 
+    function editMessage($post) {
+        $new = $this->encrypt($post['new_message'], 1383);
+        $old = $this->encrypt($post['old_message'], 1383);
+        $date = $post['date'];
+        $id = $post['contact_id'];
+
+        $sql = "UPDATE messages SET text=? WHERE reciver_id=? AND text=? AND send_date=?";
+        $params = array($new, $id, $old, $date);
+        $this->doQuery($sql, $params);
+
+        $response = array(
+            "status"=> true,
+            "message"=> 'edited succesfully'
+        );
+
+        return json_encode($response);
+    }
+
+    function deleteMessage($post) {
+        $id = $post['contact_id'];
+        $msg = $this->encrypt($post['msg'], 1383);
+        $date = $post['date'];
+
+        $sql = 'DELETE FROM messages WHERE text=? AND reciver_id=? AND send_date=?';
+        $params = array($msg, $id, $date);
+        $this->doQuery($sql, $params);
+
+        $response = array(
+            "status"=> true,
+            "message"=> "deleted"
+        );
+
+        return json_encode($response);
+    }
+
 }
+
 
 
 

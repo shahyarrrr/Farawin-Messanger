@@ -50,4 +50,14 @@ class Index extends Controller
         $result = $this->model->refreshChat($_GET);
         echo $result;
     }
+
+    function editMessage() {
+        $result = $this->model->editMessage($_POST);
+        echo $result;
+    }
+
+    function deleteMessage() {
+        $result = $this->model->deleteMessage($_POST);
+        echo $result;
+    }
 }
