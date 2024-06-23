@@ -143,6 +143,12 @@ height: 90vh;
     margin-right: -2px;
 }
 
+.block-icon {
+    width: 24px;
+    margin-top: -3px;
+    margin-right: 1px;
+}
+
 .contact-profile {
     border-radius: 50%;
     min-width: 40px;

@@ -60,4 +60,9 @@ class Index extends Controller
         $result = $this->model->deleteMessage($_POST);
         echo $result;
     }
+
+    function blockContact() {
+        $result = $this->model->blockContact($_POST);
+        echo $result;
+    }
 }

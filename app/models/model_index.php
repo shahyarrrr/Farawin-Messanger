@@ -224,6 +224,20 @@ class model_index extends Model
         return json_encode($response);
     }
 
+    function blockContact($post) {
+        $id = $post['id'];
+        $user_id = Model::session_get('id');
+
+        $sql = "DELETE FROM contacts WHERE user_id=? AND contact_id=?";
+        $params = array($user_id, $id);
+        $this->doQuery($sql, $params);
+
+        $response = array(
+            "status"=> true,
+        );
+        return json_encode($response);
+    }
+
 }
 
 

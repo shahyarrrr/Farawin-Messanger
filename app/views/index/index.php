@@ -247,6 +247,18 @@
             };
             editButton.appendChild(editIcon);
 
+            const blockContact = document.createElement('img');
+            blockContact.src = 'public/images/close.png';
+            blockContact.alt = 'block';
+            blockContact.classList.add('block-icon');
+
+            const blockButton =document.createElement('button');
+            blockButton.src = 'public/images/close.png';
+            blockButton.onclick = function(e) {
+                block(id);
+            };
+            blockButton.appendChild(blockContact);
+
             
             contentTag.appendChild(nameTag);
             contentTag.appendChild(textTag);
@@ -254,6 +266,7 @@
             contactBoxTag.appendChild(imageTag);
             contactBoxTag.appendChild(contentTag);
             contactBoxTag.appendChild(editButton);
+            contactBoxTag.appendChild(blockButton);
 
             linkTag.appendChild(contactBoxTag);
 
@@ -384,6 +397,29 @@
             }
         }
 
+        function block(id) {
+            const isConfirmed = confirm("Are you sure you want to delete this contact?");
+            if (isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?= URL; ?>index/blockContact",
+                    data: {
+                        id : id
+                    },
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        if (response.status == true) {
+                            refreshContactList()
+                        }
+                    },
+
+                    error: function(response) {
+                        alert('alert!');
+                    }
+                })
+            }
+        }
+
         function deleteMessage(messageContent, dateSpan) {
             const isConfirmed = confirm("Are you sure you want to delete this message?");
             if (isConfirmed) {
@@ -422,7 +458,7 @@
             }
         }
 
-        setInterval(clickButton, 10000);
+        // setInterval(clickButton, 1000);
 
     </script>
 </body>
